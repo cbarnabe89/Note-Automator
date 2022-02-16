@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Create a Note</title>
+</head>
+<body>
+    <h1 class="ml-3 text-center">Template for Payments</h1>
+
+    <form>
+        <div class="form-floating mb-3 mt-3 ml-3">
+            <label for="coverage" class="form-label ">Coverage Type:</label>
+            <input type="text" class="form-control paymentCalc" id="coverage" placeholder="Coverage Type" onchange="computeNetClaim()" required>
+        </div>
+
+        <div class="form-floating mb-3 mt-3 ml-3">
+            <label for="C_RCV" class="form-label ">Replacement Cost Value</label>
+            <input type="number" class="form-control paymentCalc" id="C_RCV" min="0" step="0.01" value="0.00" value="0.00" onchange="computeNetClaim()" required>
+        </div>
+        
+        <div class="mb-3 mt-3 ml-3">
+            <label for="C_R_D" class="form-label ">Less Recoverable Depreciation</label>
+            <input type="number" class="form-control paymentCalc" id="C_R_D" min="0" step="0.01" value="0.00" onchange="computeNetClaim()" required>
+        </div>
+
+        <div class="mb-3 mt-3 ml-3">
+            <label for="C_NR_D" class="form-label ">Less Non-Recoverable Depreciation</label>
+            <input type="number" class="form-control paymentCalc" id="C_NR_D" min="0" step="0.01" value="0.00" onchange="computeNetClaim()" required>
+        </div>
+
+        <div class="mb-3 mt-3 ml-3">
+            <label for="C_ACV" class="form-label ">Actual Cash Value</label>
+            <input type="number" class="form-control paymentCalc" id="C_ACV" min="0" step="0.01" value="0.00" onchange="computeNetClaim()" required>
+        </div>
+
+        <div class="mb-3 mt-3 ml-3">
+            <label for="deductible" class="form-label ">Less Deductible</label>
+            <input type="number" class="form-control paymentCalc" id="deductible" min="0" step="0.01" value="0.00" onchange="computeNetClaim()" required>
+        </div>
+
+        <div class="mb-3 mt-3 ml-3">
+            <label for="amount_OL" class="form-label ">Less Amount Over Limit</label>
+            <input type="number" class="form-control paymentCalc" id="amount_OL" min="0" step="0.01" value="0.00" onchange="computeNetClaim()" required>
+        </div>
+
+        <div class="mb-3 mt-3 ml-3">
+            <label for="priorPayment" class="form-label ">Less Prior Payment</label>
+            <input type="number" class="form-control paymentCalc" id="priorPayment" min="0" step="0.01" value="0.00" onchange="computeNetClaim()" required>
+        </div>
+
+        <div class="mb-3 mt-3 ml-3">
+            <label for="Net_Claim" class="form-label ">Total Net Claim</label>
+            <input type="number" class="form-control " id="Net_Claim" min="0" step="0.01" value="0.00" onchange="computeNetClaim()">
+        </div>
+
+        <button type="button" class="btn btn-primary ml-3" id="btn" onclick="displayReserve(), displayPayment()">Render Note</button>
+    </form>
+
+    <h3><label class="mt-3 ml-3">Reserve Notes:</label></h3>
+    <p class="ml-3 output" id="outputReserve">Reserve Note</p>
+    <h3><label class="ml-3">Payment Notes:</label></h3>
+    <textarea class="ml-3 output" id="outputPayment" rows="13" cols="75"> Payment Note</textarea>
+
+</body>
+</html>
+
+    <script>
+        //Compute Math for this 
+        function computeNetClaim(){
+            //var netClaim = document.getElementsById('Net_Claim');
+            var C_RCV = document.getElementById("C_RCV").value;
+            var C_R_D = document.getElementById("C_R_D").value;
+            var C_NR_D = document.getElementById("C_NR_D").value;
+            var C_ACV = document.getElementById("C_ACV").value;
+            var deductible = document.getElementById("deductible").value;
+            var amount_OL = document.getElementById("amount_OL").value;
+            var priorPayment = document.getElementById("priorPayment").value;
+            
+            var C_ACV = (parseFloat(C_RCV) - parseFloat(C_R_D) - parseFloat(C_NR_D)).toFixed(2)
+            document.getElementById("C_ACV").value = C_ACV
+            var netClaim = (parseFloat(C_ACV) - parseFloat(deductible) - parseFloat(amount_OL) - parseFloat(priorPayment)).toFixed(2)
+            document.getElementById('Net_Claim').value = netClaim
+        }
+
+        function displayReserve(){
+            var coverage = document.getElementById('coverage').value;
+            var btn = document.getElementById('btn');
+            var C_RCV = document.getElementById("C_RCV").value;
+            var C_R_D = document.getElementById("C_R_D").value;
+            var C_NR_D = document.getElementById("C_NR_D").value;
+            var C_ACV = document.getElementById("C_ACV").value;
+            var deductible = document.getElementById("deductible").value;
+            var amount_OL = document.getElementById("amount_OL").value;
+            var priorPayment = document.getElementById("priorPayment").value;
+            var outputReserve = document.getElementById('outputReserve');
+            
+            outputReserve.innerHTML = "Setting " + coverage +" reserves to $" + Math.ceil(parseFloat(C_RCV) - parseFloat(C_NR_D) - parseFloat(deductible) - parseFloat(amount_OL)).toFixed(2) + " to cover payout of $" + (parseFloat(C_RCV) - parseFloat(C_NR_D) - parseFloat(deductible) - parseFloat(amount_OL)).toFixed(2) + " on claim file.";
+            
+        }
+        
+        function displayPayment(){
+            var btn = document.getElementById('btn');
+            var coverage = document.getElementById('coverage').value;
+            var C_RCV = document.getElementById("C_RCV").value;
+            var C_R_D = document.getElementById("C_R_D").value;
+            var C_NR_D = document.getElementById("C_NR_D").value;
+            var C_ACV = document.getElementById("C_ACV").value;
+            var deductible = document.getElementById("deductible").value;
+            var amount_OL = document.getElementById("amount_OL").value;
+            var priorPayment = document.getElementById("priorPayment").value;
+            var Net_Claim = document.getElementById("Net_Claim").value;
+            var outputPayment = document.getElementById('outputPayment');
+            var paymentNote = "Summary for " + coverage + "\n" + "\n" + "Replacement Cost Value -            " + "$" + (parseFloat(C_RCV)).toFixed(2) + "\n" + "Less Recoverable Depreciation -     " + "$" + (parseFloat(C_R_D)).toFixed(2) +  "\n" + "Less Non-Recoverable Depreciation - " + "$" + (parseFloat(C_NR_D)).toFixed(2) + "\n" + "---------------------------------------------\n" + "Actual Cash Value -                 " +"$" + (parseFloat(C_ACV)).toFixed(2) + "\n" +"Less Deductible -                   " + "$" + (parseFloat(deductible)).toFixed(2) + "\n" + "Less Amount Over Limit -            " + "$" + (parseFloat(amount_OL)).toFixed(2) + "\n" + "Less Prior Payment -                " + "$" + (parseFloat(priorPayment)).toFixed(2) + "\n" + "---------------------------------------------\n" + "Net Claim -                         " + "$" + (parseFloat(Net_Claim)).toFixed(2) + "\n";
+            outputPayment.innerHTML = paymentNote;
+        }
+
+    </script>
+    <style>
+        #outputPayment{
+            text-align: end;
+            white-space: pre-line;
+        }
+    </style>
+</body>
+</html>
+
